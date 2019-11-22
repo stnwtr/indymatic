@@ -1,0 +1,32 @@
+plugins {
+    id 'java'
+}
+
+group 'at.stnwtr'
+version '1.0'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+
+    maven {
+        url 'https://jitpack.io'
+    }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    implementation 'com.github.stnwtr:indy4j:master'
+}
+
+test {
+    useJUnitPlatform()
+
+    testLogging {
+        showStandardStreams = true
+        events = ['passed', 'failed', 'skipped']
+    }
+}
