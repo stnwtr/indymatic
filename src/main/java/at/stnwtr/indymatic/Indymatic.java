@@ -1,6 +1,7 @@
 package at.stnwtr.indymatic;
 
 import at.stnwtr.indy4j.credentials.Credentials;
+import at.stnwtr.indymatic.config.Config;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -29,6 +30,6 @@ public class Indymatic {
     Credentials credentials = Credentials.from(args[0], args[1]);
     Path file = Paths.get(args[2]);
 
-
+    Config config = new Config(file);
   }
 }
