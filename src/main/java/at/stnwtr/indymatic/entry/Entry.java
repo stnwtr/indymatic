@@ -2,6 +2,9 @@ package at.stnwtr.indymatic.entry;
 
 import at.stnwtr.indy4j.entry.RequestEntry;
 import at.stnwtr.indy4j.event.FutureEvent;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Objects;
 
 /**
  * The super class for teacher id or room id based entries.
@@ -9,7 +12,7 @@ import at.stnwtr.indy4j.event.FutureEvent;
  * @author stnwtr
  * @since 24.11.2019
  */
-public abstract class Entry {
+public abstract class Entry implements Comparable<Entry> {
 
   /**
    * All parts of this entry.
@@ -58,10 +61,117 @@ public abstract class Entry {
   }
 
   /**
+   * Get the entry for the specific config line.
    *
-   *
-   * @param event
-   * @return
+   * @param event The future event to get the entry for.
+   * @return The new {@link RequestEntry}.
    */
   public abstract RequestEntry getEntry(FutureEvent event);
+
+  /**
+   * Get all entry parts.
+   *
+   * @return The entry parts.
+   */
+  public String[] getEntryParts() {
+    return entryParts;
+  }
+
+  /**
+   * Get the entry day.
+   *
+   * @return The day.
+   */
+  public String getDay() {
+    return day;
+  }
+
+  /**
+   * Get the entry hour.
+   *
+   * @return The hour.
+   */
+  public int getHour() {
+    return hour;
+  }
+
+  /**
+   * Get the entry priority.
+   *
+   * @return The priority.
+   */
+  public int getPriority() {
+    return priority;
+  }
+
+  /**
+   * Get the entry subject.
+   *
+   * @return The subject.
+   */
+  public String getSubject() {
+    return subject;
+  }
+
+  /**
+   * Get the entry activity.
+   *
+   * @return The activity.
+   */
+  public String getActivity() {
+    return activity;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Entry entry = (Entry) o;
+    return hour == entry.hour &&
+        priority == entry.priority &&
+        Arrays.equals(entryParts, entry.entryParts) &&
+        Objects.equals(day, entry.day) &&
+        Objects.equals(subject, entry.subject) &&
+        Objects.equals(activity, entry.activity);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int hashCode() {
+    int result = Objects.hash(day, hour, priority, subject, activity);
+    result = 31 * result + Arrays.hashCode(entryParts);
+    return result;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    return "Entry{" +
+        "entryParts=" + Arrays.toString(entryParts) +
+        ", day='" + day + '\'' +
+        ", hour=" + hour +
+        ", priority=" + priority +
+        ", subject='" + subject + '\'' +
+        ", activity='" + activity + '\'' +
+        '}';
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int compareTo(Entry o) {
+    return this.priority - o.priority;
+  }
 }

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -99,11 +100,16 @@ public class Config {
    */
   public List<Entry> getEntriesForDay(final String day) {
     return lines.map(s -> s.split(TERMINATOR))
-        .filter(strings -> strings[0].equals(day) || strings[0].equals(ANY))
+        .peek(strings -> {
+          for (int i = 0; i < strings.length; i++) {
+            strings[i] = strings[i].trim();
+          }
+        })
+        .filter(strings -> strings[0].equalsIgnoreCase(day) || strings[0].equals(ANY))
         .map(strings -> {
-          if (strings[3].equals(TEACHER)) {
+          if (strings[3].equalsIgnoreCase(TEACHER)) {
             return new TeacherEntry(strings);
-          } else if (strings[3].equals(ROOM)) {
+          } else if (strings[3].equalsIgnoreCase(ROOM)) {
             return new RoomEntry(strings);
           } else {
             return null;

@@ -31,5 +31,10 @@ public class Indymatic {
     Path file = Paths.get(args[2]);
 
     Config config = new Config(file);
+
+    config.getEntriesForDay("Mo").stream()
+//        .filter(entry -> entry.getHour() == 3)
+        .sorted()
+        .forEach(System.out::println);
   }
 }
