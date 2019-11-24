@@ -19,7 +19,7 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 
-    implementation 'com.github.stnwtr:indy4j:master'
+    implementation 'com.github.stnwtr:indy4j:master-SNAPSHOT'
 }
 
 test {
@@ -29,4 +29,8 @@ test {
         showStandardStreams = true
         events = ['passed', 'failed', 'skipped']
     }
+}
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
