@@ -34,3 +34,17 @@ test {
 configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'at.stnwtr.indymatic.Indymatic'
+    }
+
+    from {
+        configurations['runtimeClasspath'].collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+    
+    with jar
+}
