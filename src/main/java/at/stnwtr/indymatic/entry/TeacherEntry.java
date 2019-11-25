@@ -1,5 +1,6 @@
 package at.stnwtr.indymatic.entry;
 
+import at.stnwtr.indy4j.entry.EntryCombination;
 import at.stnwtr.indy4j.entry.RequestEntry;
 import at.stnwtr.indy4j.event.FutureEvent;
 import at.stnwtr.indy4j.teacher.Teacher;
@@ -16,8 +17,8 @@ public class TeacherEntry extends Entry {
   /**
    * {@inheritDoc}
    */
-  public TeacherEntry(String... entryParts) {
-    super(entryParts);
+  public TeacherEntry(FutureEvent event, String... entryParts) {
+    super(event, entryParts);
 
     teacherId = entryParts[4];
   }
@@ -35,16 +36,27 @@ public class TeacherEntry extends Entry {
    * {@inheritDoc}
    */
   @Override
-  public RequestEntry getEntry(FutureEvent event) {
+  public RequestEntry getEntry() {
     String id = event.getTeachers(hour).stream()
-        .filter(teacher -> teacher.getId().equals(teacherId))
+        .filter(teacher -> teacher.getId().equalsIgnoreCase(teacherId))
         .findFirst()
         .map(Teacher::getId)
         .orElseThrow(InvalidEntryException::new);
 
-    // extra method if entry is correct? room available, student limit not reached, etc.
-
     return RequestEntry.normalSchoolDay(hour, id, subject, activity);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isValid() {
+    EntryCombination combination = event.getEntryCombinationForHour(hour).stream()
+        .filter(entryCombination -> entryCombination.getTeacher().getId().equalsIgnoreCase(teacherId))
+        .findFirst()
+        .orElse(null);
+
+    return combination != null && combination.getStudentAmount() < combination.getStudentLimit();
   }
 
   /**

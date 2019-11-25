@@ -12,7 +12,17 @@ import java.util.Objects;
  * @author stnwtr
  * @since 24.11.2019
  */
-public abstract class Entry implements Comparable<Entry> {
+public abstract class Entry {
+
+  /**
+   * Compare entries by priority to sort.
+   */
+  public static final Comparator<Entry> PRIORITY_SORT = Comparator.comparingInt(Entry::getPriority);
+
+  /**
+   * The {@link FutureEvent} this entry is for.
+   */
+  protected final FutureEvent event;
 
   /**
    * All parts of this entry.
@@ -49,7 +59,8 @@ public abstract class Entry implements Comparable<Entry> {
    *
    * @param entryParts The entry parts.
    */
-  public Entry(String... entryParts) {
+  public Entry(FutureEvent event, String... entryParts) {
+    this.event = event;
     this.entryParts = entryParts;
 
     this.day = entryParts[0];
@@ -63,10 +74,16 @@ public abstract class Entry implements Comparable<Entry> {
   /**
    * Get the entry for the specific config line.
    *
-   * @param event The future event to get the entry for.
    * @return The new {@link RequestEntry}.
    */
-  public abstract RequestEntry getEntry(FutureEvent event);
+  public abstract RequestEntry getEntry();
+
+  /**
+   * Check if the entry is valid.
+   *
+   * @return True if valid else false.
+   */
+  public abstract boolean isValid();
 
   /**
    * Get all entry parts.
@@ -165,13 +182,5 @@ public abstract class Entry implements Comparable<Entry> {
         ", subject='" + subject + '\'' +
         ", activity='" + activity + '\'' +
         '}';
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public int compareTo(Entry o) {
-    return this.priority - o.priority;
   }
 }

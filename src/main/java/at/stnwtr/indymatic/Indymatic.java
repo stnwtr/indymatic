@@ -1,7 +1,11 @@
 package at.stnwtr.indymatic;
 
+import at.stnwtr.indy4j.Indy;
 import at.stnwtr.indy4j.credentials.Credentials;
+import at.stnwtr.indy4j.event.EventContext;
+import at.stnwtr.indy4j.event.FutureEvent;
 import at.stnwtr.indymatic.config.Config;
+import at.stnwtr.indymatic.entry.Entry;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -32,9 +36,26 @@ public class Indymatic {
 
     Config config = new Config(file);
 
-    config.getEntriesForDay("Mo").stream()
-//        .filter(entry -> entry.getHour() == 3)
-        .sorted()
-        .forEach(System.out::println);
+    Indy indy = new Indy(credentials);
+    indy.login();
+
+    indy.getNextEventContexts(Integer.MAX_VALUE).stream()
+        .map(EventContext::loadEvent)
+        .filter(event -> event instanceof FutureEvent)
+        .map(event -> (FutureEvent) event)
+        .forEach(event -> {
+          for (int hour : event.getEventContext().getHours()) {
+            if (!event.getEntries().get(hour).isPresent()) {
+              config.getEntriesForDay(event).stream()
+                  .filter(entry -> entry.getHour() == hour)
+                  .filter(Entry::isValid)
+                  .findFirst()
+                  .map(Entry::getEntry)
+                  .ifPresent(event::enrol);
+            }
+          }
+        });
+
+    indy.logout();
   }
 }
