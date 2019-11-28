@@ -33,7 +33,7 @@ Here are a few example lines for the priority file.
 Mo : 3 : 1 : r : l01 : am : differentialgleichungen
 Mo : 3 : 2 : t : ham : insy : mysql ddl dml dql
 ```
-[This](https://github.com/stnwtr/indymatic/blob/master/src/main/resources/priorities.cfg) is an sample file you could use as it is.
+[This](https://github.com/stnwtr/indymatic/blob/master/src/main/resources/priorities.cfg) is a sample file you could use as it is.
 
 ## Launch the program
 To launch the automatic indy entry tool you first have to compile it.
